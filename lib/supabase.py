@@ -7,7 +7,7 @@ class SupabaseClient:
     def __init__(self):
         self.client_url = os.environ.get("SUPABASE_URL")
         self.key = os.environ.get("SUPABASE_KEY")
-        self.supabase = create_client(url, key)
+        self.supabase = create_client(self.client_url, self.key)
         self.create_table_for_fmp()
     
     '''
@@ -21,9 +21,7 @@ class SupabaseClient:
         end;
         $$;
     '''
-
-
-
+    
     def create_table_for_fmp(self) -> None:
         sql = """
             create table if not exists public.fmp_table (
