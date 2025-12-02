@@ -2,7 +2,8 @@ import os
 from dotenv import load_dotenv
 import csv
 import requests
-from lib.db import DBManager
+# from lib.db import DBManager
+from lib.supabase import SupabaseClient
 from datetime import datetime, timedelta
 
 '''
@@ -17,11 +18,7 @@ class FMP_Collector:
     def __init__(self):
         load_dotenv()
         self.api_key = os.getenv('FMP_API_KEY')
-        self.dmo = DBManager()
-        
-        # creating table if not exist here
-        self.dmo.create_earning_table_for_fmp()
-
+        self.sbc = SupabaseClient()
         self.date_format = "%Y-%m-%d"
         self.date_today = datetime.today().strftime('%Y-%m-%d')
         self.date_yesterday = self._get_date_delta_by_days(1)
@@ -39,7 +36,7 @@ class FMP_Collector:
         with requests.Session() as s:
             data = s.get(url).json()
             for d in range(0,len(data)):
-                self.dmo.insert_earning_report( 
+                self.sbc.insert_earning_report(
                     data[d]['symbol'],
                     data[d]['date'],
                     data[d]['epsActual'],
