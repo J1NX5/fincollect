@@ -8,7 +8,7 @@ jc.start()
 
 try:
     while True:
+        print("fincollect is running :)")
         time.sleep(3600)
 except KeyboardInterrupt:
     logging.info("Programm wurde manuell beendet")
-    print("Ciao Kakao")
