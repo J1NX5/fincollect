@@ -33,6 +33,8 @@ touch .env
 The .env file need this variable
 ```
 FMP_API_KEY=<Api-Key>
+SUPABASE_URL=<Api-Key>
+SUPABASE_KEY=<Api-Key>
 ```
 
 ```bash
