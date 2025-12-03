@@ -21,7 +21,7 @@ class FMP_Collector:
         self.sbc = SupabaseClient()
         self.date_format = "%Y-%m-%d"
         self.date_today = datetime.today().strftime('%Y-%m-%d')
-        self.date_yesterday = self._get_date_delta_by_days(1)
+        self.date_yesterday = self._get_date_delta_by_days(14)
 
     def _get_date_delta_by_days(self,day_delay: int) -> str:
         current_date_obj = datetime.strptime(self.date_today, self.date_format)
@@ -44,7 +44,7 @@ class FMP_Collector:
                     data[d]['revenueActual'], 
                     data[d]['revenueEstimated'], 
                     data[d]['lastUpdated'], 
-                    str(self.current_date), 
+                    str(self.date_today), 
                     0
                 )
 
