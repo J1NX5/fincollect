@@ -3,20 +3,21 @@ import lib.logging_config
 from apscheduler.schedulers.background import BackgroundScheduler
 # from lib.financialmodelingprep import FMP_Collector
 from lib.alphavantage import AV_Collector
-
+from lib.scraper import FinanceScraper
 
 class Jobcenter:
 
     def __init__(self):
         self.scheduler = BackgroundScheduler()
-        self.scheduler.add_job(self._get_earning_report_from_fmp, 'interval', minutes=1)
+        self.scheduler.add_job(self._start_scraper, 'interval', minutes=1)
 
     def start(self):
         self.scheduler.start()
         return logging.info("Jobcenter hat geöffnet")
 
     def _start_scraper(self):
-        pass
+        fso = FinanceScraper()
+        fso.scrape()
     
 
     # def _get_earning_report_from_fmp(self):
