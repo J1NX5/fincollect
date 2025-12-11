@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scraper-container
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    volumes:
+      - ~/reports:/app/reports
