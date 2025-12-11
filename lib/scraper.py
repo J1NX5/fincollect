@@ -18,9 +18,11 @@ class FinanceScraper:
 
     # date_today for cvs name
         self.date_today = datetime.today().strftime('%Y-%m-%d')
-        self.service = Service('/usr/bin/chromedriver')
+        self.service = Service('/usr/local/bin/chromedriver')
+        # self.service = Service('/usr/bin/chromedriver')
         self.chrome_options = Options()
-        self.chrome_options.binary_location = '/usr/bin/chromium-browser'
+        self.chrome_options.binary_location = '/usr/bin/google-chrome'
+        # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0')
         self.chrome_options.page_load_strategy = 'eager'
