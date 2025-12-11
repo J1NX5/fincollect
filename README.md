@@ -52,5 +52,5 @@ cd fincollect
 ```
 
 ```bash
-docker build .
+docker build -t scraper .
 ```
