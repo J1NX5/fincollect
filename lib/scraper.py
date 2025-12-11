@@ -23,7 +23,10 @@ class FinanceScraper:
         self.chrome_options = Options()
         self.chrome_options.binary_location = '/usr/bin/google-chrome'
         # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
-        self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_argument("--headless=new")
+        self.chrome_options.add_argument("--no-sandbox")
+        self.chrome_options.add_argument("--disable-dev-shm-usage")
+        # self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0')
         self.chrome_options.page_load_strategy = 'eager'
         self.driver = webdriver.Chrome(service=self.service, options=self.chrome_options)
