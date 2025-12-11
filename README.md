@@ -40,3 +40,17 @@ SUPABASE_KEY=<Api-Key>
 ```bash
 python main.py
 ```
+
+## Run in docker
+
+```bash
+git clone https://github.com/J1NX5/fincollect
+```
+
+```bash
+cd fincollect
+```
+
+```bash
+docker build .
+```
