@@ -38,7 +38,7 @@ class FinanceScraper:
 
         # url of browser for local testing
         # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
-        
+
         self.chrome_options.add_argument("--headless=new")
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.add_argument("--disable-dev-shm-usage")
@@ -83,7 +83,9 @@ class FinanceScraper:
                     # filter symbol
                     parts = [p for p in href.split("/") if p]
                     symbol = parts[-1]
-                    logging.info(f'Symbol: {symbol}')
+
+                    # write to log file which symbol current in work
+                    logging.info(f'Call report for symbol: {symbol}')
 
 
                     if href and href.startswith("http"):
@@ -92,7 +94,12 @@ class FinanceScraper:
                         # print(fin_base_url + href + "financials/")
                         self.driver.get(self.fin_base_url + href + "financials/")
                         soup_l2 = BeautifulSoup(self.driver.page_source, 'html.parser')
-                        # print(soup_l2.get_text(strip=True))
+
+                        # catch case obj is None
+                        if soup_l2 == None:
+                            raise Exception("soup_l2 is None")
+
+
                         self.driver.execute_script("""
                             var buttons = document.querySelectorAll('button');
                             for(var btn of buttons) {
