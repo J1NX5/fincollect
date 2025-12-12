@@ -16,9 +16,9 @@ class Jobcenter:
     def __init__(self):
         self.scheduler = BackgroundScheduler()
         # self.scheduler.add_job(self._start_scraper, 'interval', minutes=1)
-        logging.log("Start scraping once for the begin")
+        logging.info("Start scraping once for the begin")
         self._start_scraper()
-        logging.log("Add job to interval")
+        logging.info("Add job to interval")
         self.scheduler.add_job(self._start_scraper, 'interval', hours=1)
 
     def start(self):
