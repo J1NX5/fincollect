@@ -11,3 +11,4 @@ services:
     stdin_open: true
     volumes:
       - ~/reports:/app/reports
+      - ~/reports/log.txt:/app/log.txt
