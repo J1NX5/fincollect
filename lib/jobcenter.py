@@ -5,10 +5,13 @@ from lib.scraper import FinanceScraper
 import logging
 
 logging.basicConfig(
-    filename='log.txt',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler('log.txt'), 
+        logging.StreamHandler()
+    ]
 )
 
 class Jobcenter:
