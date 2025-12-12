@@ -1,9 +1,15 @@
-import logging
-import lib.logging_config
 from apscheduler.schedulers.background import BackgroundScheduler
 # from lib.financialmodelingprep import FMP_Collector
 from lib.alphavantage import AV_Collector
 from lib.scraper import FinanceScraper
+import logging
+
+logging.basicConfig(
+    filename='log.txt',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 class Jobcenter:
 
