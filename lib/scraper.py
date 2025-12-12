@@ -21,12 +21,12 @@ class FinanceScraper:
 
     # date_today for cvs name
         self.date_today = datetime.today().strftime('%Y-%m-%d')
-        # self.service = Service('/usr/local/bin/chromedriver')
-        self.service = Service('/usr/bin/chromedriver')
+        self.service = Service('/usr/local/bin/chromedriver')
+        # self.service = Service('/usr/bin/chromedriver')
         self.chrome_options = Options()
-        # self.chrome_options.binary_location = '/usr/bin/google-chrome'
-        self.chrome_options.binary_location = '/usr/bin/chromium-browser'
-        # self.chrome_options.add_argument("--headless=new")
+        self.chrome_options.binary_location = '/usr/bin/google-chrome'
+        #self.chrome_options.binary_location = '/usr/bin/chromium-browser'
+        self.chrome_options.add_argument("--headless=new")
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.add_argument("--disable-dev-shm-usage")
         # self.chrome_options.add_argument("--headless")
