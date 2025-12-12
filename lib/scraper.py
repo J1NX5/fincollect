@@ -74,7 +74,14 @@ class FinanceScraper:
                 self.driver.get(self.base_url)
                 time.sleep(2)
                 soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+
+                # The section where data exist is the only one whithout css class
                 section = soup.find('section', class_=None)
+
+                # if obj is None means find not worked
+                if section == None:
+                    raise Exception("Section is None")
+
                 links = section.find_all('a', attrs={'href': re.compile(r'/quote/[A-Z]+/')})
                 for l in links:
                     # at this point we need to extract the symbol from the link
@@ -99,7 +106,7 @@ class FinanceScraper:
                         if soup_l2 == None:
                             raise Exception("soup_l2 is None")
 
-
+                        # accept cookie
                         self.driver.execute_script("""
                             var buttons = document.querySelectorAll('button');
                             for(var btn of buttons) {
@@ -108,9 +115,14 @@ class FinanceScraper:
                                 }
                             }
                         """)
+                        
+                        # select section where the data exist
                         section_l2 = soup_l2.find('section', class_='finContainer yf-yuwun0')
+
+                        # catch case obj is None
                         if section_l2 == None:
                             raise Exception("section_l2 is None")
+                        
                         row = section_l2.find_all(class_="row")
                         data = []
                         for r in row:
@@ -146,8 +158,9 @@ class FinanceScraper:
                         time.sleep(2) 
             except Exception as e:
                 logging.info(f'Error:{e}')
-            time.sleep(2) 
-        return self.driver.quit()
+            time.sleep(2)
+        self.driver.quit() 
+        return logging.info("function is finish and driver has quit")
 
 if __name__ == "__main__":
     fso = FinanceScraper()
