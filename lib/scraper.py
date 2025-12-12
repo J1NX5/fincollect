@@ -26,12 +26,19 @@ class FinanceScraper:
     # date_today for cvs name
         self.date_today = datetime.today().strftime('%Y-%m-%d')
 
+        # url of chromedriver for docker build
         self.service = Service('/usr/local/bin/chromedriver')
+
+        # url of chromedriver for local testing
         # self.service = Service('/usr/bin/chromedriver')
         self.chrome_options = Options()
 
+        # url of browser for docker build
         self.chrome_options.binary_location = '/usr/bin/google-chrome'
+
+        # url of browser for local testing
         # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
+        
         self.chrome_options.add_argument("--headless=new")
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.add_argument("--disable-dev-shm-usage")
@@ -95,6 +102,8 @@ class FinanceScraper:
                             }
                         """)
                         section_l2 = soup_l2.find('section', class_='finContainer yf-yuwun0')
+                        if section_l2 == None:
+                            raise Exception("section_l2 is None")
                         row = section_l2.find_all(class_="row")
                         data = []
                         for r in row:
