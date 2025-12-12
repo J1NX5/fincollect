@@ -76,7 +76,8 @@ class FinanceScraper:
                     # filter symbol
                     parts = [p for p in href.split("/") if p]
                     symbol = parts[-1]
-                    print(f'Symbol: {symbol}')
+                    logging.info(f'Symbol: {symbol}')
+
 
                     if href and href.startswith("http"):
                         pass
