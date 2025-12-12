@@ -26,9 +26,9 @@ class Jobcenter:
         return logging.info("Jobcenter hat geöffnet")
 
     def _start_scraper(self):
-        logging.log("Build scrpaer-object")
+        logging.info("Build scrpaer-object")
         fso = FinanceScraper()
-        logging.log("Start scrape-function on object")
+        logging.info("Start scrape-function on object")
         fso.scrape()
     
 
