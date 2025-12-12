@@ -31,14 +31,13 @@ class FinanceScraper:
 
         # url of chromedriver for docker build
         self.service = Service('/usr/local/bin/chromedriver')
-
         # url of chromedriver for local testing
         # self.service = Service('/usr/bin/chromedriver')
+
         self.chrome_options = Options()
 
         # url of browser for docker build
         self.chrome_options.binary_location = '/usr/bin/google-chrome'
-
         # url of browser for local testing
         # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
 
