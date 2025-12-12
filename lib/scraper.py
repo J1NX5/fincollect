@@ -11,7 +11,7 @@ import pandas as pd
 from datetime import datetime
 import json
 import logging
-import logging_config
+import lib.logging_config
 
 
 
