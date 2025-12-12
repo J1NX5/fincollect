@@ -124,7 +124,7 @@ class FinanceScraper:
             except Exception as e:
                 logging.INFO("Error in iterating sites")
             time.sleep(2) 
-        return driver.quit()
+        return self.driver.quit()
 
 if __name__ == "__main__":
     fso = FinanceScraper()
