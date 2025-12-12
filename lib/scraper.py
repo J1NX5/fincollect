@@ -11,9 +11,13 @@ import pandas as pd
 from datetime import datetime
 import json
 import logging
-import lib.logging_config
 
-
+logging.basicConfig(
+    filename='log.txt',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 class FinanceScraper:
 
@@ -22,12 +26,12 @@ class FinanceScraper:
     # date_today for cvs name
         self.date_today = datetime.today().strftime('%Y-%m-%d')
 
-        self.service = Service('/usr/local/bin/chromedriver')
-        # self.service = Service('/usr/bin/chromedriver')
+        # self.service = Service('/usr/local/bin/chromedriver')
+        self.service = Service('/usr/bin/chromedriver')
         self.chrome_options = Options()
 
-        self.chrome_options.binary_location = '/usr/bin/google-chrome'
-        # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
+        # self.chrome_options.binary_location = '/usr/bin/google-chrome'
+        self.chrome_options.binary_location = '/usr/bin/chromium-browser'
         self.chrome_options.add_argument("--headless=new")
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.add_argument("--disable-dev-shm-usage")
@@ -39,6 +43,7 @@ class FinanceScraper:
         self.fin_base_url = "https://finance.yahoo.com"
 
     def scrape(self):
+        logging.info("Start function")
         self.driver.get(self.base_url)
         self.driver.execute_script("""
             var buttons = document.querySelectorAll('button');
@@ -62,7 +67,7 @@ class FinanceScraper:
                 self.driver.get(self.base_url)
                 time.sleep(2)
                 soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-                section = soup.find('section', class_='main')
+                section = soup.find('section', class_=None)
                 links = section.find_all('a', attrs={'href': re.compile(r'/quote/[A-Z]+/')})
                 for l in links:
                     # at this point we need to extract the symbol from the link
@@ -121,8 +126,9 @@ class FinanceScraper:
                         #write in file
                         with open(f'reports/{file_name}', 'w') as f:
                             json.dump(data_struct, f, indent=4)
+                        time.sleep(2) 
             except Exception as e:
-                logging.INFO("Error in iterating sites")
+                logging.info(f'Error:{e}')
             time.sleep(2) 
         return self.driver.quit()
 
