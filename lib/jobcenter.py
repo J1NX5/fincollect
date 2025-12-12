@@ -10,6 +10,7 @@ class Jobcenter:
     def __init__(self):
         self.scheduler = BackgroundScheduler()
         # self.scheduler.add_job(self._start_scraper, 'interval', minutes=1)
+        self._start_scraper(self)
         self.scheduler.add_job(self._start_scraper, 'interval', hours=1)
 
     def start(self):
