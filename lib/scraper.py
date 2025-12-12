@@ -79,7 +79,7 @@ class FinanceScraper:
                 section = soup.find('section', class_=None)
 
                 # if obj is None means find not worked
-                if section == None:
+                if section is None:
                     raise Exception("Section is None")
 
                 links = section.find_all('a', attrs={'href': re.compile(r'/quote/[A-Z]+/')})
@@ -103,7 +103,7 @@ class FinanceScraper:
                         soup_l2 = BeautifulSoup(self.driver.page_source, 'html.parser')
 
                         # catch case obj is None
-                        if soup_l2 == None:
+                        if soup_l2 is None:
                             raise Exception("soup_l2 is None")
 
                         # accept cookie
@@ -120,7 +120,7 @@ class FinanceScraper:
                         section_l2 = soup_l2.find('section', class_='finContainer yf-yuwun0')
 
                         # catch case obj is None
-                        if section_l2 == None:
+                        if section_l2 is None:
                             raise Exception("section_l2 is None")
                         
                         row = section_l2.find_all(class_="row")
