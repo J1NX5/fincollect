@@ -27,34 +27,44 @@ class FinanceScraper:
     def __init__(self):
 
     # date_today for cvs name
-        self.date_today = datetime.today().strftime('%Y-%m-%d')
+        self.__date_today = datetime.today().strftime('%Y-%m-%d')
 
         # url of chromedriver for docker build
-        self.service = Service('/usr/local/bin/chromedriver')
+        # self.service = Service('/usr/local/bin/chromedriver')
         # url of chromedriver for local testing
-        # self.service = Service('/usr/bin/chromedriver')
+        self.__service = Service('/usr/bin/chromedriver')
 
-        self.chrome_options = Options()
+        self.__chrome_options = Options()
 
         # url of browser for docker build
-        self.chrome_options.binary_location = '/usr/bin/google-chrome'
+        # self.chrome_options.binary_location = '/usr/bin/google-chrome'
         # url of browser for local testing
-        # self.chrome_options.binary_location = '/usr/bin/chromium-browser'
+        self.__chrome_options.binary_location = '/usr/bin/chromium-browser'
 
-        self.chrome_options.add_argument("--headless=new")
-        self.chrome_options.add_argument("--no-sandbox")
-        self.chrome_options.add_argument("--disable-dev-shm-usage")
+        self.__chrome_options.add_argument("--headless=new")
+        self.__chrome_options.add_argument("--no-sandbox")
+        self.__chrome_options.add_argument("--disable-dev-shm-usage")
         # self.chrome_options.add_argument("--headless")
-        self.chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0')
-        self.chrome_options.page_load_strategy = 'eager'
-        self.driver = webdriver.Chrome(service=self.service, options=self.chrome_options)
-        self.base_url = "https://finance.yahoo.com/calendar/earnings"
-        self.fin_base_url = "https://finance.yahoo.com"
+        self.__chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0')
+        self.__chrome_options.page_load_strategy = 'eager'
+        self.__driver = webdriver.Chrome(service=self.__service, options=self.__chrome_options)
+        self.__base_url = "https://finance.yahoo.com/calendar/earnings"
+        self.__fin_base_url = "https://finance.yahoo.com"
 
+    def wait(func):
+        def wrapper(*args, **kwargs):
+            logging.info("decorator @wait would called")
+            time.sleep(2)
+            return func(*args, **kwargs)
+        return wrapper
+
+
+    # The decorator is called befor the function is called
+    @wait
     def scrape(self):
         logging.info("Start function")
-        self.driver.get(self.base_url)
-        self.driver.execute_script("""
+        self.__driver.get(self.__base_url)
+        self.__driver.execute_script("""
             var buttons = document.querySelectorAll('button');
             for(var btn of buttons) {
                 if(btn.textContent.includes('Accept') || btn.textContent.includes('Alle akzeptieren')) {
@@ -62,7 +72,7 @@ class FinanceScraper:
                 }
             }
         """)
-        page_string = BeautifulSoup(self.driver.page_source, 'html.parser').find(class_="total")
+        page_string = BeautifulSoup(self.__driver.page_source, 'html.parser').find(class_="total")
 
         if page_string is None:
             number_of_pages = "1"
@@ -73,9 +83,9 @@ class FinanceScraper:
         earning_data = dict()
         for offset in range(0, int(number_of_pages)):
             try: 
-                self.driver.get(self.base_url)
+                self.__driver.get(self.__base_url)
                 time.sleep(2)
-                soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                soup = BeautifulSoup(self.__driver.page_source, 'html.parser')
 
                 # The section where data exist is the only one whithout css class
                 section = soup.find('section', class_=None)
@@ -101,15 +111,15 @@ class FinanceScraper:
                         pass
                     else:
                         # print(fin_base_url + href + "financials/")
-                        self.driver.get(self.fin_base_url + href + "financials/")
-                        soup_l2 = BeautifulSoup(self.driver.page_source, 'html.parser')
+                        self.__driver.get(self.__fin_base_url + href + "financials/")
+                        soup_l2 = BeautifulSoup(self.__driver.page_source, 'html.parser')
 
                         # catch case obj is None
                         if soup_l2 is None:
                             raise Exception("soup_l2 is None")
 
                         # accept cookie
-                        self.driver.execute_script("""
+                        self.__driver.execute_script("""
                             var buttons = document.querySelectorAll('button');
                             for(var btn of buttons) {
                                 if(btn.textContent.includes('Quarterly')){
@@ -144,7 +154,7 @@ class FinanceScraper:
 
                         #prepare fields for jsons struct
                         date_from_data = df_filtered.columns[1]
-                        file_name = str(symbol + "_" + self.date_today)
+                        file_name = str(symbol + "_" + self.__date_today)
 
                         # create a struct for json export
                         data_struct = {
@@ -161,7 +171,7 @@ class FinanceScraper:
             except Exception as e:
                 logging.info(f'Error:{e}')
             time.sleep(2)
-        self.driver.quit() 
+        self.__driver.quit() 
         return logging.info("function is finish and driver has quit")
 
 if __name__ == "__main__":
