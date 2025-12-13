@@ -26,7 +26,7 @@ class FinanceScraper:
 
     def __init__(self):
 
-    # date_today for cvs name
+        # date_today for cvs name
         self.__date_today = datetime.today().strftime('%Y-%m-%d')
 
         # url of chromedriver for docker build
