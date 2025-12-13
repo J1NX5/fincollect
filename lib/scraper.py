@@ -53,7 +53,7 @@ class FinanceScraper:
 
     def wait(func):
         def wrapper(*args, **kwargs):
-            logging.info("decorator @wait would called")
+            logging.info("decorator @wait is called")
             time.sleep(2)
             return func(*args, **kwargs)
         return wrapper

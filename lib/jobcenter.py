@@ -17,26 +17,21 @@ logging.basicConfig(
 class Jobcenter:
 
     def __init__(self):
-        self.scheduler = BackgroundScheduler()
+        self.__scheduler = BackgroundScheduler()
         # self.scheduler.add_job(self._start_scraper, 'interval', minutes=1)
         logging.info("Start scraping once for the begin")
         self._start_scraper()
-        self.scheduler.add_job(self._start_scraper, 'interval', hours=1)
+        self.__scheduler.add_job(self._start_scraper, 'interval', hours=1)
 
-    def start(self):
-        self.scheduler.start()
+    def start(self) -> None:
+        self.__scheduler.start()
         return logging.info("Jobcenter hat geöffnet")
+        
 
-    def _start_scraper(self):
+    def _start_scraper(self) -> None:
         logging.info("Build scraper-object")
         fso = FinanceScraper()
         logging.info("Start scraping")
         fso.scrape()
-    
-
-    # def _get_earning_report_from_fmp(self):
-    #     avColl = AV_Collector()
-    #     avColl.job()
-    #     return logging.info("_get_earning_report_from_fmp: wurde ausgeführt!")
 
     
