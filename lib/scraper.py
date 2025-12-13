@@ -30,21 +30,21 @@ class FinanceScraper:
         self.__date_today = datetime.today().strftime('%Y-%m-%d')
 
         # url of chromedriver for docker build
-        # self.service = Service('/usr/local/bin/chromedriver')
+        self.__service = Service('/usr/local/bin/chromedriver')
         # url of chromedriver for local testing
-        self.__service = Service('/usr/bin/chromedriver')
+        # self.__service = Service('/usr/bin/chromedriver')
 
         self.__chrome_options = Options()
 
         # url of browser for docker build
-        # self.chrome_options.binary_location = '/usr/bin/google-chrome'
+        self.__chrome_options.binary_location = '/usr/bin/google-chrome'
         # url of browser for local testing
-        self.__chrome_options.binary_location = '/usr/bin/chromium-browser'
+        # self.__chrome_options.binary_location = '/usr/bin/chromium-browser'
 
         self.__chrome_options.add_argument("--headless=new")
         self.__chrome_options.add_argument("--no-sandbox")
         self.__chrome_options.add_argument("--disable-dev-shm-usage")
-        # self.chrome_options.add_argument("--headless")
+        # self.__chrome_options.add_argument("--headless")
         self.__chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0')
         self.__chrome_options.page_load_strategy = 'eager'
         self.__driver = webdriver.Chrome(service=self.__service, options=self.__chrome_options)
