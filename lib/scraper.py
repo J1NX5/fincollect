@@ -92,7 +92,7 @@ class FinanceScraper:
 
                 # if obj is None means find not worked
                 if section is None:
-                    raise Exception("Section is None")
+                    logging.warning(f'Section is None from symbol call {symbol}')
 
                 links = section.find_all('a', attrs={'href': re.compile(r'/quote/[A-Z]+/')})
                 for l in links:
@@ -106,68 +106,72 @@ class FinanceScraper:
                     # write to log file which symbol current in work
                     logging.info(f'Call report for symbol: {symbol}')
 
-
                     if href and href.startswith("http"):
                         pass
                     else:
-                        # print(fin_base_url + href + "financials/")
+                        origin_url = self.__fin_base_url + href + "financials/"
                         self.__driver.get(self.__fin_base_url + href + "financials/")
-                        soup_l2 = BeautifulSoup(self.__driver.page_source, 'html.parser')
+                        if self.__driver.current_url != origin_url:
+                            logging.warning(f'url has changed in symbol call {symbol}')
+                        else:
+                            soup_l2 = BeautifulSoup(self.__driver.page_source, 'html.parser')
 
-                        # catch case obj is None
-                        if soup_l2 is None:
-                            raise Exception("soup_l2 is None")
+                            # catch case obj is None
+                            if soup_l2 is None:
+                                logging.warning(f'soup_l2 is None from symbol call {symbol}')
 
-                        # accept cookie
-                        self.__driver.execute_script("""
-                            var buttons = document.querySelectorAll('button');
-                            for(var btn of buttons) {
-                                if(btn.textContent.includes('Quarterly')){
-                                    btn.click(); break;
+                            # accept cookie
+                            self.__driver.execute_script("""
+                                var buttons = document.querySelectorAll('button');
+                                for(var btn of buttons) {
+                                    if(btn.textContent.includes('Quarterly')){
+                                        btn.click(); break;
+                                    }
                                 }
-                            }
-                        """)
-                        
-                        # select section where the data exist
-                        section_l2 = soup_l2.find('section', class_='finContainer yf-yuwun0')
+                            """)
+                            
+                            # select section where the data exist
+                            section_l2 = soup_l2.find('section', class_='finContainer')
 
-                        # catch case obj is None
-                        if section_l2 is None:
-                            raise Exception("section_l2 is None")
-                        
-                        row = section_l2.find_all(class_="row")
-                        data = []
-                        for r in row:
-                            column = r.select("div.column")
-                            values = [c.get_text(strip=True) for c in column]
-                            data.append(values)
-                        
-                        #create struct for pandas
-                        header = data[0]
-                        data = data[1:]
+                            # catch case obj is None
+                            if section_l2 is None:
+                                logging.warning(f'section_l2 is None from symbol call {symbol}')
+                            
+                            row = section_l2.find_all(class_="row")
+                            data = []
+                            for r in row:
+                                column = r.select("div.column")
+                                values = [c.get_text(strip=True) for c in column]
+                                data.append(values)
+                            
+                            #create struct for pandas
+                            header = data[0]
+                            data = data[1:]
+                            if len(header) == 2:
+                                logging.warning(f'The symbol {symbol} has not the recommend struct')
+                            else:
+                                #create pandasframe
+                                df = pd.DataFrame(data, columns=header)
 
-                        #create pandasframe
-                        df = pd.DataFrame(data, columns=header)
+                                ## filter for data and create new frame -> only comlum 0 and 2
+                                df_filtered = df.iloc[:, [0,2]]
 
-                        ## filter for data and create new frame -> only comlum 0 and 2
-                        df_filtered = df.iloc[:, [0,2]]
+                                #prepare fields for jsons struct
+                                date_from_data = df_filtered.columns[1]
+                                file_name = str(symbol + "_" + self.__date_today)
 
-                        #prepare fields for jsons struct
-                        date_from_data = df_filtered.columns[1]
-                        file_name = str(symbol + "_" + self.__date_today)
-
-                        # create a struct for json export
-                        data_struct = {
-                            symbol : {
-                                date_from_data : {
-                                    df_filtered.iloc[i, 0]: df_filtered.iloc[i, 1] for i in range(len(df_filtered))
+                                # create a struct for json export
+                                data_struct = {
+                                    symbol : {
+                                        date_from_data : {
+                                            df_filtered.iloc[i, 0]: df_filtered.iloc[i, 1] for i in range(len(df_filtered))
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                        #write in file
-                        with open(f'reports/{file_name}', 'w') as f:
-                            json.dump(data_struct, f, indent=4)
-                        time.sleep(2) 
+                                #write in file
+                                with open(f'reports/{file_name}', 'w') as f:
+                                    json.dump(data_struct, f, indent=4)
+                                time.sleep(2) 
             except Exception as e:
                 logging.info(f'Error:{e}')
             time.sleep(2)
